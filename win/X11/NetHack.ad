@@ -19,7 +19,7 @@ NetHack*map*font:			nh10
 ! the custom format - to enlarge an XPM file, use processing tools
 ! such as XV or preferably PBMplus.
 !
-!NetHack.tile_file: x11tiles
+NetHack.tile_file: x11tiles
 !NetHack.double_tile_size: True
 !
 ! The annotation of pets.
