@@ -358,7 +358,6 @@ void
 ustatusline()
 {
 	char info[BUFSZ];
-
 	info[0] = '\0';
 	if (Sick) {
 		Strcat(info, ", en train de mourir de");
@@ -371,20 +370,20 @@ ustatusline()
 		}
 	}
 	if (Stoned)		Strcat(info, ", en train de se solidifier");
-	if (Slimed)		Strcat(info, ", becoming slimy");
-	if (Strangled)		Strcat(info, ", being strangled");
-	if (Vomiting)		Strcat(info, ", nauseated"); /* !"nauseous" */
-	if (Confusion)		Strcat(info, ", confused");
+	if (Slimed)		Strcat(info, ", en train de devenir gluant");
+	if (Strangled)		Strcat(info, ", en train d'être étranglé");
+	if (Vomiting)		Strcat(info, ", nauséeux"); /* !"nauseous" */
+	if (Confusion)		Strcat(info, ", confus");
 	if (Blind) {
-	    Strcat(info, ", blind");
+	    Strcat(info, ", aveugle");
 	    if (u.ucreamed) {
 		if ((long)u.ucreamed < Blinded || Blindfolded
 						|| !haseyes(youmonst.data))
-		    Strcat(info, ", cover");
-		Strcat(info, "ed by sticky goop");
+		    Strcat(info, ", couvert");
+		Strcat(info, " d'un glop collant");
 	    }	/* note: "goop" == "glop"; variation is intentional */
 	}
-	if (Stunned)		Strcat(info, ", stunned");
+	if (Stunned)		Strcat(info, ", assommé");
 #ifdef STEED
 	if (!u.usteed)
 #endif
