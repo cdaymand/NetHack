@@ -116,7 +116,7 @@ You VA_DECL(const char *, line)
 	char *tmp;
 	VA_START(line);
 	VA_INIT(line, const char *);
-	vpline(YouMessage(tmp, "You ", line), VA_ARGS);
+	vpline(YouMessage(tmp, "Vous ", line), VA_ARGS);
 	VA_END();
 }
 
@@ -126,7 +126,7 @@ Your VA_DECL(const char *,line)
 	char *tmp;
 	VA_START(line);
 	VA_INIT(line, const char *);
-	vpline(YouMessage(tmp, "Your ", line), VA_ARGS);
+	vpline(YouMessage(tmp, "Votre ", line), VA_ARGS);
 	VA_END();
 }
 
@@ -136,7 +136,7 @@ You_feel VA_DECL(const char *,line)
 	char *tmp;
 	VA_START(line);
 	VA_INIT(line, const char *);
-	vpline(YouMessage(tmp, "You feel ", line), VA_ARGS);
+	vpline(YouMessage(tmp, "Vous vous sentez ", line), VA_ARGS);
 	VA_END();
 }
 
@@ -147,7 +147,7 @@ You_cant VA_DECL(const char *,line)
 	char *tmp;
 	VA_START(line);
 	VA_INIT(line, const char *);
-	vpline(YouMessage(tmp, "You can't ", line), VA_ARGS);
+	vpline(YouMessage(tmp, "Vous ne pouvez pas ", line), VA_ARGS);
 	VA_END();
 }
 
@@ -157,7 +157,7 @@ pline_The VA_DECL(const char *,line)
 	char *tmp;
 	VA_START(line);
 	VA_INIT(line, const char *);
-	vpline(YouMessage(tmp, "The ", line), VA_ARGS);
+	vpline(YouMessage(tmp, "Le ", line), VA_ARGS);
 	VA_END();
 }
 
@@ -167,7 +167,7 @@ There VA_DECL(const char *,line)
 	char *tmp;
 	VA_START(line);
 	VA_INIT(line, const char *);
-	vpline(YouMessage(tmp, "There ", line), VA_ARGS);
+	vpline(YouMessage(tmp, "Ici ", line), VA_ARGS);
 	VA_END();
 }
 
@@ -178,11 +178,11 @@ You_hear VA_DECL(const char *,line)
 	VA_START(line);
 	VA_INIT(line, const char *);
 	if (Underwater)
-		YouPrefix(tmp, "You barely hear ", line);
+		YouPrefix(tmp, "Vous entendez à peine ", line);
 	else if (u.usleep)
-		YouPrefix(tmp, "You dream that you hear ", line);
+		YouPrefix(tmp, "Vous rêvez que vous entendez ", line);
 	else
-		YouPrefix(tmp, "You hear ", line);
+		YouPrefix(tmp, "Vous entendez ", line);
 	vpline(strcat(tmp, line), VA_ARGS);
 	VA_END();
 }
@@ -249,7 +249,7 @@ impossible VA_DECL(const char *, s)
 	VA_START(s);
 	VA_INIT(s, const char *);
 	if (program_state.in_impossible)
-		panic("impossible called impossible");
+		panic("l'impossible appelle l'impossible");
 	program_state.in_impossible = 1;
 	{
 	    char pbuf[BUFSZ];
@@ -257,7 +257,7 @@ impossible VA_DECL(const char *, s)
 	    paniclog("impossible", pbuf);
 	}
 	vpline(s,VA_ARGS);
-	pline("Program in disorder - perhaps you'd better #quit.");
+	pline("Programme en désordre - vous feriez peut être mieux de #quit.");
 	program_state.in_impossible = 0;
 	VA_END();
 }
@@ -267,12 +267,12 @@ align_str(alignment)
     aligntyp alignment;
 {
     switch ((int)alignment) {
-	case A_CHAOTIC: return "chaotic";
-	case A_NEUTRAL: return "neutral";
-	case A_LAWFUL:	return "lawful";
-	case A_NONE:	return "unaligned";
+	case A_CHAOTIC: return "chaotique";
+	case A_NEUTRAL: return "neutre";
+	case A_LAWFUL:	return "bon";
+	case A_NONE:	return "sans alignement";
     }
-    return "unknown";
+    return "inconnu";
 }
 
 void
@@ -292,51 +292,51 @@ register struct monst *mtmp;
 		A_NEUTRAL;
 
 	info[0] = 0;
-	if (mtmp->mtame) {	  Strcat(info, ", tame");
+	if (mtmp->mtame) {	  Strcat(info, ", apprivoise");
 #ifdef WIZARD
 	    if (wizard) {
 		Sprintf(eos(info), " (%d", mtmp->mtame);
 		if (!mtmp->isminion)
-		    Sprintf(eos(info), "; hungry %ld; apport %d",
+		    Sprintf(eos(info), "; faim %ld; apport %d",
 			EDOG(mtmp)->hungrytime, EDOG(mtmp)->apport);
 		Strcat(info, ")");
 	    }
 #endif
 	}
-	else if (mtmp->mpeaceful) Strcat(info, ", peaceful");
-	if (mtmp->meating)	  Strcat(info, ", eating");
-	if (mtmp->mcan)		  Strcat(info, ", cancelled");
-	if (mtmp->mconf)	  Strcat(info, ", confused");
+	else if (mtmp->mpeaceful) Strcat(info, ", pacifique");
+	if (mtmp->meating)	  Strcat(info, ", en train de manger");
+	if (mtmp->mcan)		  Strcat(info, ", annulé");
+	if (mtmp->mconf)	  Strcat(info, ", confus");
 	if (mtmp->mblinded || !mtmp->mcansee)
-				  Strcat(info, ", blind");
-	if (mtmp->mstun)	  Strcat(info, ", stunned");
-	if (mtmp->msleeping)	  Strcat(info, ", asleep");
+				  Strcat(info, ", aveugle");
+	if (mtmp->mstun)	  Strcat(info, ", assomé");
+	if (mtmp->msleeping)	  Strcat(info, ", endormi");
 #if 0	/* unfortunately mfrozen covers temporary sleep and being busy
 	   (donning armor, for instance) as well as paralysis */
-	else if (mtmp->mfrozen)	  Strcat(info, ", paralyzed");
+	else if (mtmp->mfrozen)	  Strcat(info, ", paralyzé");
 #else
 	else if (mtmp->mfrozen || !mtmp->mcanmove)
-				  Strcat(info, ", can't move");
+				  Strcat(info, ", ne peut pas bouger");
 #endif
 				  /* [arbitrary reason why it isn't moving] */
 	else if (mtmp->mstrategy & STRAT_WAITMASK)
-				  Strcat(info, ", meditating");
-	else if (mtmp->mflee)	  Strcat(info, ", scared");
-	if (mtmp->mtrapped)	  Strcat(info, ", trapped");
+				  Strcat(info, ", en train de méditer");
+	else if (mtmp->mflee)	  Strcat(info, ", effrayé");
+	if (mtmp->mtrapped)	  Strcat(info, ", piégé");
 	if (mtmp->mspeed)	  Strcat(info,
-					mtmp->mspeed == MFAST ? ", fast" :
-					mtmp->mspeed == MSLOW ? ", slow" :
-					", ???? speed");
-	if (mtmp->mundetected)	  Strcat(info, ", concealed");
+					mtmp->mspeed == MFAST ? ", rapide" :
+					mtmp->mspeed == MSLOW ? ", lent" :
+					", ???? vitesse");
+	if (mtmp->mundetected)	  Strcat(info, ", caché");
 	if (mtmp->minvis)	  Strcat(info, ", invisible");
 	if (mtmp == u.ustuck)	  Strcat(info,
-			(sticks(youmonst.data)) ? ", held by you" :
+			(sticks(youmonst.data)) ? ", tenu par vous" :
 				u.uswallow ? (is_animal(u.ustuck->data) ?
-				", swallowed you" :
-				", engulfed you") :
-				", holding you");
+				", vous a avalé" :
+				", vous a englouti") :
+				", vous retient");
 #ifdef STEED
-	if (mtmp == u.usteed)	  Strcat(info, ", carrying you");
+	if (mtmp == u.usteed)	  Strcat(info, ", vous transporte");
 #endif
 
 	/* avoid "Status of the invisible newt ..., invisible" */
@@ -344,7 +344,7 @@ register struct monst *mtmp;
 	Strcpy(monnambuf, x_monnam(mtmp, ARTICLE_THE, (char *)0,
 	    (SUPPRESS_IT|SUPPRESS_INVISIBLE), FALSE));
 
-	pline("Status of %s (%s):  Level %d  HP %d(%d)  AC %d%s.",
+	pline("Status de %s (%s):  Niveau %d  HP %d(%d)  CA %d%s.",
 		monnambuf,
 		align_str(alignment),
 		mtmp->m_lev,
@@ -361,16 +361,16 @@ ustatusline()
 
 	info[0] = '\0';
 	if (Sick) {
-		Strcat(info, ", dying from");
+		Strcat(info, ", en train de mourir de");
 		if (u.usick_type & SICK_VOMITABLE)
-			Strcat(info, " food poisoning");
+			Strcat(info, " intoxication alimentaire");
 		if (u.usick_type & SICK_NONVOMITABLE) {
 			if (u.usick_type & SICK_VOMITABLE)
-				Strcat(info, " and");
-			Strcat(info, " illness");
+				Strcat(info, " et");
+			Strcat(info, " maladie");
 		}
 	}
-	if (Stoned)		Strcat(info, ", solidifying");
+	if (Stoned)		Strcat(info, ", en train de se solidifier");
 	if (Slimed)		Strcat(info, ", becoming slimy");
 	if (Strangled)		Strcat(info, ", being strangled");
 	if (Vomiting)		Strcat(info, ", nauseated"); /* !"nauseous" */
