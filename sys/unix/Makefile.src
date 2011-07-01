@@ -43,8 +43,8 @@ LINK=$(CC)
 #
 # for UNIX systems
 SYSSRC = ../sys/share/ioctl.c ../sys/share/unixtty.c ../sys/unix/unixmain.c \
-	../sys/unix/unixunix.c ../sys/unix/unixres.c
-SYSOBJ = ioctl.o unixmain.o unixtty.o unixunix.o unixres.o
+	../sys/unix/unixunix.c ../sys/unix/unixres.c ../sys/unix/vtiles.c
+SYSOBJ = ioctl.o unixmain.o unixtty.o unixunix.o unixres.o vtiles.o
 #
 # for Systos
 # SYSSRC = ../sys/atari/tos.c ../sys/share/pcmain.c ../sys/share/pcsys.c \
@@ -171,8 +171,8 @@ CXX=g++
 #
 # files for a straight tty port using no native windowing system
 WINTTYSRC = ../win/tty/getline.c ../win/tty/termcap.c ../win/tty/topl.c \
-	../win/tty/wintty.c
-WINTTYOBJ = getline.o termcap.o topl.o wintty.o
+	../win/tty/wintty.c tile.c
+WINTTYOBJ = getline.o termcap.o topl.o wintty.o tile.o
 #
 # files for an X11 port
 # (tile.c is a generated source file)
@@ -228,10 +228,10 @@ WINOBJ = $(WINTTYOBJ)
 #
 # libraries for tty ports
 # WINTTYLIB = -ltermcap
-# WINTTYLIB = -lcurses
+WINTTYLIB = -lncurses
 # WINTTYLIB = -lcurses16
 # WINTTYLIB = -lncurses
-WINTTYLIB = -ltermlib
+# WINTTYLIB = -ltermlib
 #
 # libraries for X11
 # If USE_XPM is defined in config.h, you will also need -lXpm here.
@@ -332,7 +332,8 @@ HACKCSRC = allmain.c alloc.c apply.c artifact.c attrib.c ball.c bones.c \
 SYSCSRC = ../sys/atari/tos.c ../sys/share/pcmain.c ../sys/share/pcsys.c \
 	../sys/share/pctty.c ../sys/share/pcunix.c ../sys/share/random.c \
 	../sys/share/ioctl.c ../sys/share/unixtty.c ../sys/unix/unixmain.c \
-	../sys/unix/unixunix.c ../sys/unix/unixres.c ../sys/be/bemain.c
+	../sys/unix/unixunix.c ../sys/unix/unixres.c ../sys/be/bemain.c \
+    ../sys/unix/vtiles.c
 
 # generated source files (tile.c is handled separately via WINxxxSRC)
 GENCSRC = monstr.c vis_tab.c	#tile.c
@@ -594,6 +595,8 @@ unixunix.o: ../sys/unix/unixunix.c $(HACK_H)
 	$(CC) $(CFLAGS) -c ../sys/unix/unixunix.c
 unixres.o: ../sys/unix/unixres.c $(CONFIG_H)
 	$(CC) $(CFLAGS) -c ../sys/unix/unixres.c
+vtiles.o: ../sys/unix/vtiles.c $(HACK_H) $(CONFIG_H)
+	$(CC) $(CFLAGS) -c ../sys/unix/vtiles.c
 bemain.o: ../sys/be/bemain.c $(HACK_H) ../include/dlb.h
 	$(CC) $(CFLAGS) -c ../sys/be/bemain.c
 getline.o: ../win/tty/getline.c $(HACK_H) ../include/func_tab.h

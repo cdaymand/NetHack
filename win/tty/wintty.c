@@ -2,6 +2,7 @@
 /* Copyright (c) David Cohrs, 1991				  */
 /* NetHack may be freely redistributed.  See license for details. */
 
+
 /*
  * Neither a standard out nor character-based control codes should be
  * part of the "tty look" windowing implementation.
@@ -44,6 +45,9 @@ extern char mapped_menu_cmds[]; /* from options.c */
 struct window_procs tty_procs = {
     "tty",
 #ifdef MSDOS
+    WC_TILED_MAP|WC_ASCII_MAP|
+#endif
+#ifdef VTILES
     WC_TILED_MAP|WC_ASCII_MAP|
 #endif
 #if defined(WIN32CON)
@@ -167,6 +171,11 @@ STATIC_DCL void FDECL(tty_putsym, (winid, int, int, CHAR_P));
 static char *FDECL(copy_of, (const char *));
 STATIC_DCL void FDECL(bail, (const char *));	/* __attribute__((noreturn)) */
 
+#if defined(USE_TILES) && defined(VTILES)
+extern void vtiles_move(winid);
+extern int vtiles_enabled();
+extern void vtiles_put_glyph(int, int);
+#endif
 /*
  * A string containing all the default commands -- to add to a list
  * of acceptable inputs.
@@ -184,6 +193,7 @@ static const char default_menu_cmds[] = {
 	MENU_INVERT_PAGE,
 	0	/* null terminator */
 };
+
 
 
 /* clean up and quit */
@@ -296,6 +306,9 @@ char** argv;
     wins[BASE_WINDOW]->active = 1;
 
     ttyDisplay->lastwin = WIN_ERR;
+#if defined(USE_TILES) && defined(VTILES)
+    vtiles_move(WIN_ERR);
+#endif
 
 #if defined(SIGWINCH) && defined(CLIPPING)
     (void) signal(SIGWINCH, winch);
@@ -777,6 +790,9 @@ tty_exit_nhwindows(str)
 {
     winid i;
 
+#if defined(USE_TILES) && defined(VTILES)
+    vtiles_move(WIN_ERR);
+#endif
     tty_suspend_nhwindows(str);
     /* Just forget any windows existed, since we're about to exit anyway.
      * Disable windows to avoid calls to window routines.
@@ -975,6 +991,9 @@ tty_clear_nhwindow(window)
     if(window == WIN_ERR || (cw = wins[window]) == (struct WinDesc *) 0)
 	panic(winpanicstr,  window);
     ttyDisplay->lastwin = window;
+#if defined(USE_TILES) && defined(VTILES)
+    vtiles_move(window);
+#endif
 
     switch(cw->type) {
     case NHW_MESSAGE:
@@ -1498,6 +1517,9 @@ tty_display_nhwindow(window, blocking)
 	return;
     ttyDisplay->lastwin = window;
     ttyDisplay->rawprint = 0;
+#if defined(USE_TILES) && defined(VTILES)
+    vtiles_move(window);
+#endif
 
     switch(cw->type) {
     case NHW_MESSAGE:
@@ -1617,6 +1639,7 @@ tty_destroy_nhwindow(window)
     wins[window] = 0;
 }
 
+
 void
 tty_curs(window, x, y)
 winid window;
@@ -1630,8 +1653,11 @@ register int x, y;	/* not xchar: perhaps xchar is unsigned and
     if(window == WIN_ERR || (cw = wins[window]) == (struct WinDesc *) 0)
 	panic(winpanicstr,  window);
     ttyDisplay->lastwin = window;
+#if defined(USE_TILES) && defined(VTILES)
+    vtiles_move(window);
+#endif
 
-#if defined(USE_TILES) && defined(MSDOS)
+#if defined(USE_TILES) && defined(MSDOS) 
     adjust_cursor_flags(cw);
 #endif
     cw->curx = --x;	/* column 0 is never used */
@@ -1771,6 +1797,9 @@ tty_putstr(window, attr, str)
 	str = compress_str(str);
 
     ttyDisplay->lastwin = window;
+#if defined(USE_TILES) && defined(VTILES)
+    vtiles_move(window);
+#endif
 
     switch(cw->type) {
     case NHW_MESSAGE:
@@ -2435,6 +2464,21 @@ tty_print_glyph(window, x, y, glyph)
     }
 #endif
 
+#if defined(USE_TILES) && defined(VTILES)
+    if (!(
+#ifdef REINCARNATION
+	Is_rogue_level(&u.uz) ||
+#endif
+	iflags.wc_ascii_map) && vtiles_enabled()) {
+        /* VTILES compiled in, vtiles enabled, 
+         * and not Rogue Level */
+        vtiles_put_glyph(glyph, special);
+        goto done;
+    } else {
+        /* Fall through to normal rendering */
+    }
+#endif /* VTILES */
+
 #ifdef TEXTCOLOR
     if (color != ttyDisplay->color) {
 	if(ttyDisplay->color != NO_COLOR)
@@ -2457,7 +2501,7 @@ tty_print_glyph(window, x, y, glyph)
       xputg(glyph,ch,special);
     else
 #endif
-	g_putch(ch);		/* print the character */
+	  g_putch(ch);		/* print the character */
 
     if (reverse_on) {
     	term_end_attr(ATR_INVERSE);
@@ -2470,6 +2514,7 @@ tty_print_glyph(window, x, y, glyph)
 #endif
     }
 
+done:
     wins[window]->curx++;	/* one character over */
     ttyDisplay->curx++;		/* the real cursor moved too */
 }

@@ -24,8 +24,8 @@ SYSMSWINSRC = $(srcdir)/../sys/winnt/nttty.c $(srcdir)/../sys/winnt/winnt.c \
 	$(srcdir)/../sys/share/nhlan.c $(srcdir)/../sys/winnt/ntsound.c
 SYSMSWINOBJ = nttty.o winnt.o pcsys.o pcunix.o pcmain.o random.o nhlan.o ntsound.o
 #
-SYSSRC=@SYSSRC@
-SYSOBJ=@SYSOBJ@
+SYSSRC=@SYSSRC@ $(srcdir)/../sys/unix/vtiles.c
+SYSOBJ=@SYSOBJ@ $(srcdir)/../sys/unix/vtiles.o
 
 CC = @CC@ -DAUTOCONF
 WINDRES = @WINDRES@
@@ -48,8 +48,8 @@ CXX=g++
 
 # files for a straight tty port using no native windowing system
 WINTTYSRC = $(srcdir)/../win/tty/getline.c $(srcdir)/../win/tty/termcap.c $(srcdir)/../win/tty/topl.c \
-	$(srcdir)/../win/tty/wintty.c 
-WINTTYOBJ = getline.o termcap.o topl.o wintty.o 
+	$(srcdir)/../win/tty/wintty.c tile.c 
+WINTTYOBJ = getline.o termcap.o topl.o wintty.o tile.o 
 #
 # files for an X11 port
 # (tile.c is included in the defn. for WINCSRC, below)
@@ -105,7 +105,7 @@ WINMSCFLAGS=-I$(srcdir)/../win/win32 -D_WIN32_IE=0x0400
 
 WINSRC = @WINSRC@
 WINOBJ = @WINOBJ@
-WINTTYLIB = @WINTTYLIB@
+WINTTYLIB = -lncurses
 WINX11LIB = -lXaw -lXmu -lXext -lXt -lX11
 
 # libraries for Qt
@@ -188,7 +188,7 @@ SYSCSRC = $(srcdir)/../sys/share/nhlan.c $(srcdir)/../sys/share/ioctl.c \
 	$(srcdir)/../sys/atari/tos.c $(srcdir)/../sys/be/bemain.c \
 	$(srcdir)/../sys/unix/unixmain.c $(srcdir)/../sys/unix/unixres.c \
 	$(srcdir)/../sys/unix/unixunix.c $(srcdir)/../sys/winnt/nttty.c \
-	$(srcdir)/../sys/winnt/winnt.c
+	$(srcdir)/../sys/winnt/winnt.c $(srcdir)/../sys/unix/vtiles.c
 
 # generated source files (tile.c is handled separately)
 GENCSRC = monstr.c vis_tab.c  #tile.c
@@ -484,6 +484,8 @@ unixtty.o: $(srcdir)/../sys/share/unixtty.c $(HACK_H)
 	$(CC) $(CFLAGS) -c $(srcdir)/../sys/share/unixtty.c
 tos.o: $(srcdir)/../sys/atari/tos.c $(HACK_H) ../include/tcap.h
 	$(CC) $(CFLAGS) -c $(srcdir)/../sys/atari/tos.c
+vtiles.o: $(srcdir)/../sys/unix/vtiles.c $(HACK_H) $(CONFIG_H)
+	$(CC) $(CFLAGS) -c $(srcdir)/../sys/unix/vtiles.c
 bemain.o: $(srcdir)/../sys/be/bemain.c $(HACK_H) ../include/dlb.h
 	$(CC) $(CFLAGS) -c $(srcdir)/../sys/be/bemain.c
 unixmain.o: $(srcdir)/../sys/unix/unixmain.c $(HACK_H) ../include/dlb.h

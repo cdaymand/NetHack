@@ -52,6 +52,8 @@
 /* #define GNOME_GRAPHICS */	/* Gnome interface */
 /* #define MSWIN_GRAPHICS */	/* Windows NT, CE, Graphics */
 
+#define VTILES /* TTY-based tiles */
+
 /*
  * Define the default window system.  This should be one that is compiled
  * into your system (see defines above).  Known window systems are:
@@ -84,6 +86,12 @@
 #ifndef HACKDIR	/* override the default hackdir below */
 # define HACKDIR "/boot/apps/NetHack"
 #endif
+#endif
+
+#ifdef TTY_GRAPHICS
+# ifdef VTILES
+#  define DEFAULT_WC_TILED_MAP   
+# endif
 #endif
 
 #ifdef QT_GRAPHICS
