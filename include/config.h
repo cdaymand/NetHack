@@ -182,17 +182,18 @@
 #ifndef AUTOCONF
 #ifdef UNIX
 /* path and file name extension for compression program */
-#define COMPRESS "/bin/compress"	/* Lempel-Ziv compression */
-#define COMPRESS_EXTENSION ".Z"		/* compress's extension */
+/* #define COMPRESS "/bin/compress"*/	/* Lempel-Ziv compression */
+/* #define COMPRESS_EXTENSION ".Z"	*/	/* compress's extension */
 /* An example of one alternative you might want to use: */
 /* #define COMPRESS "/usr/local/bin/gzip" */	/* FSF gzip compression */
 /* #define COMPRESS_EXTENSION ".gz" */		/* normal gzip extension */
 #endif
+#endif
+//#ifndef COMPRESS
+//# define INTERNAL_COMP	/* control use of NetHack's compression routines */
+//#endif
 
-#ifndef COMPRESS
-# define INTERNAL_COMP	/* control use of NetHack's compression routines */
-#endif
-#endif
+
 
 /*
  *	Data librarian.  Defining DLB places most of the support files into
