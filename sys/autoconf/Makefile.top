@@ -22,9 +22,10 @@ PREFIX   = @prefix@
 EXEEXT	 = @EXEEXT@
 SCRIPT   = nethack
 GAME     = nethack$(EXEEXT)
-GAMEUID  = @OWNER@
-GAMEGRP  = @GROUP@
-
+#GAMEUID  = @OWNER@
+#GAMEGRP  = @GROUP@
+GAMEUID  = games
+GAMEGRP  = games
 # Permissions - some places use setgid instead of setuid, for instance
 # See also the option "SECURE" in include/config.h
 GAMEPERM = 04755
@@ -45,8 +46,8 @@ VARDIRPERM  = 0755
 # These must agree with the definitions in unixconf.h
 
 # Defs. for non file areas support.
-GAMEDIR  = $(PREFIX)/nethackdir
-VARDIR = $(GAMEDIR)
+GAMEDIR  = $(PREFIX)/nh343
+VARDIR = $(GAMEDIR)/var
 FILE_AREA_VAR = $(VARDIR)
 FILE_AREA_SAVE = $(VARDIR)/save
 FILE_AREA_SHARE = $(GAMEDIR)
