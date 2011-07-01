@@ -30,7 +30,7 @@ static long final_fpos;
 
 #define newttentry() (struct toptenentry *) alloc(sizeof(struct toptenentry))
 #define dealloc_ttentry(ttent) free((genericptr_t) (ttent))
-#define NAMSZ	10
+#define NAMSZ	20
 #define DTHSZ	100
 #define ROLESZ   3
 #define PERSMAX	 3		/* entries per name/uid per char. allowed */
@@ -38,7 +38,7 @@ static long final_fpos;
 #define ENTRYMAX	100	/* must be >= 10 */
 
 #if !defined(MICRO) && !defined(MAC) && !defined(WIN32)
-#define PERS_IS_UID		/* delete for PERSMAX per name; now per uid */
+//#define PERS_IS_UID		/* delete for PERSMAX per name; now per uid */
 #endif
 struct toptenentry {
 	struct toptenentry *tt_next;
