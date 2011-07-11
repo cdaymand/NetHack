@@ -860,8 +860,8 @@ tty_create_nhwindow(type)
 		newwin->offy = ttyDisplay->rows-2;
 	} else
 #endif
-	newwin->offy = min((int)ttyDisplay->rows-2, ROWNO+1);
-	newwin->rows = newwin->maxrow = 2;
+	newwin->offy = min((int)ttyDisplay->rows-3, ROWNO+1);
+	newwin->rows = newwin->maxrow = 3;
 	newwin->cols = newwin->maxcol = min(ttyDisplay->cols, COLNO);
 	break;
     case NHW_MAP:

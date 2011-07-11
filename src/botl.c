@@ -4,6 +4,8 @@
 
 #include "hack.h"
 
+#define GAUGE_PRECISION 30
+
 #ifdef OVL0
 extern const char *hu_stat[];	/* defined in eat.c */
 
@@ -215,7 +217,7 @@ bot1()
 	if (flags.showscore)
 	    Sprintf(nb = eos(nb), " S:%ld", botl_score());
 #endif
-	curs(WIN_STATUS, 1, 0);
+	curs(WIN_STATUS, 1, 1);
 	putstr(WIN_STATUS, 0, newbot1);
 }
 
@@ -275,31 +277,87 @@ bot2()
 
 	if(flags.time)
 	    Sprintf(nb = eos(nb), " T:%ld", moves);
+	Sprintf(nb = eos(nb), " ");
+	
 	if(strcmp(hu_stat[u.uhs], "        ")) {
-		Sprintf(nb = eos(nb), " ");
 		Strcat(newbot2, hu_stat[u.uhs]);
 	}
-	if(Confusion)	   Sprintf(nb = eos(nb), " Conf");
+	if(Confusion)	   Sprintf(nb = eos(nb), "Conf");
 	if(Sick) {
 		if (u.usick_type & SICK_VOMITABLE)
-			   Sprintf(nb = eos(nb), " FoodPois");
+			   Sprintf(nb = eos(nb), "FoodPois");
 		if (u.usick_type & SICK_NONVOMITABLE)
-			   Sprintf(nb = eos(nb), " Ill");
+			   Sprintf(nb = eos(nb), "Ill");
 	}
-	if(Blind)	   Sprintf(nb = eos(nb), " Blind");
-	if(Stunned)	   Sprintf(nb = eos(nb), " Stun");
-	if(Hallucination)  Sprintf(nb = eos(nb), " Hallu");
-	if(Slimed)         Sprintf(nb = eos(nb), " Slime");
+	if(Blind)	   Sprintf(nb = eos(nb), "Blind");
+	if(Stunned)	   Sprintf(nb = eos(nb), "Stun");
+	if(Hallucination)  Sprintf(nb = eos(nb), "Hallu");
+	if(Slimed)         Sprintf(nb = eos(nb), "Slime");
 	if(cap > UNENCUMBERED)
-		Sprintf(nb = eos(nb), " %s", enc_stat[cap]);
-	curs(WIN_STATUS, 1, 1);
+		Sprintf(nb = eos(nb), "%s", enc_stat[cap]);
+	curs(WIN_STATUS, 1, 2);
 	putstr(WIN_STATUS, 0, newbot2);
+
 }
+
+void bot0(){
+  	char  newbot3[MAXCO];
+	memset(&newbot3,0,MAXCO);
+	register char *nb;
+	int hp, hpmax,hp_gauge,pw_gauge,i;
+	
+	hp = Upolyd ? u.mh : u.uhp;
+	hpmax = Upolyd ? u.mhmax : u.uhpmax;
+	if(hp < 0) hp = 0;
+	hp_gauge=GAUGE_PRECISION*hp/hpmax;
+	if(hp_gauge>=GAUGE_PRECISION){
+	  hp_gauge=GAUGE_PRECISION;
+	}
+	pw_gauge=GAUGE_PRECISION*u.uen/u.uenmax;
+	if(pw_gauge>GAUGE_PRECISION){
+	  pw_gauge=GAUGE_PRECISION;
+	}
+	Sprintf(nb = eos(newbot3),"HP: [");
+    	curs(WIN_STATUS, 1, 0);
+	putstr(WIN_STATUS, 0, newbot3);
+	memset(&newbot3,0,MAXCO);
+	for(i=0;i<GAUGE_PRECISION;i++){
+	  term_start_color(CLR_RED);
+	  if(i<hp_gauge){
+	    Sprintf(nb = eos(newbot3)," ");
+	  }
+	}
+	curs(WIN_STATUS, 6, 0);
+	putstr(WIN_STATUS, 0, newbot3);
+	memset(&newbot3,0,MAXCO);
+	
+	term_end_color();
+	Sprintf(nb = eos(newbot3),"] Pw:[");
+	curs(WIN_STATUS, (6+GAUGE_PRECISION), 0);
+	putstr(WIN_STATUS, 0, newbot3);
+	memset(&newbot3,0,MAXCO);
+	term_start_color(CLR_BLUE);
+	
+	for(i=0;i<GAUGE_PRECISION;i++){
+	  if(i<pw_gauge){
+	    Sprintf(nb = eos(newbot3)," ");
+	  }
+	}
+	curs(WIN_STATUS, (12+GAUGE_PRECISION), 0);
+	putstr(WIN_STATUS, 0, newbot3);
+	memset(&newbot3,0,MAXCO);
+	term_end_color();
+	Sprintf(nb = eos(newbot3),"]");
+	curs(WIN_STATUS,(12+2*GAUGE_PRECISION),0);
+	putstr(WIN_STATUS, 0, newbot3);
+}
+
 
 void
 bot()
 {
-	bot1();
+	bot0();
+        bot1();
 	bot2();
 	flags.botl = flags.botlx = 0;
 }
